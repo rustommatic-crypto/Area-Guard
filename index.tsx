@@ -3,18 +3,22 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
-// Polyfill process.env for browser compatibility
-// This ensures that 'process.env.API_KEY' doesn't cause a ReferenceError
-(window as any).process = (window as any).process || { env: {} };
-
-const rootElement = document.getElementById('root');
-if (!rootElement) {
-  throw new Error("Could not find root element to mount to");
+// Immediate polyfill for browser context
+if (typeof window !== 'undefined') {
+  (window as any).process = { env: { API_KEY: (window as any).process?.env?.API_KEY || '' } };
 }
 
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+console.log("Area Guard: Initializing Command Layer...");
+
+const rootElement = document.getElementById('root');
+
+if (!rootElement) {
+  console.error("Critical Failure: Root element not found.");
+} else {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}
