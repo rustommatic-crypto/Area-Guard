@@ -18,6 +18,7 @@ export { default as LandingPageView } from './components/LandingPage';
 export { default as AgentDeploymentView } from './components/AgentDeployment';
 export { default as PassengerEscortView } from './components/PassengerEscort';
 export { default as PublicDashboard } from './components/PublicDashboard';
+export { default as ChatBot } from './components/ChatBot';
 
 export const TacticalMapView = () => {
   const [selected, setSelected] = useState<Vehicle>(MOCK_VEHICLES[0]);

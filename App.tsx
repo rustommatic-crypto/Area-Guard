@@ -4,7 +4,7 @@ import { NAV_ITEMS, PUBLIC_NAV_ITEMS } from './constants';
 import { 
   DashboardView, TacticalMapView, EnrollmentView, LandmarkIntelView, 
   AssetRecoveryView, ForensicAuditView, BillingPanelView, LandingPageView, 
-  AgentDeploymentView, PassengerEscortView 
+  AgentDeploymentView, PassengerEscortView, ChatBot 
 } from './components';
 import PoliceRegistry from './components/PoliceRegistry';
 import PublicDashboard from './components/PublicDashboard';
@@ -144,6 +144,7 @@ const App: React.FC = () => {
         <div className="flex-1 overflow-y-auto p-4 lg:p-10 custom-scrollbar">
           {renderContent()}
         </div>
+        {activeTab !== 'landing' && <ChatBot />}
       </main>
     </div>
   );
