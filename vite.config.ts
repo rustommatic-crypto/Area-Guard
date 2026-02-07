@@ -8,11 +8,14 @@ export default defineConfig({
     'process.env.API_KEY': JSON.stringify(process.env.API_KEY || ''),
     'process.env': {}
   },
-  server: {
-    port: 3000
-  },
   build: {
     outDir: 'dist',
-    sourcemap: false
-  }
+    sourcemap: false,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: false,
+      },
+    },
+  },
 });

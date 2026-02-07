@@ -5,7 +5,7 @@ import {
   DashboardView, TacticalMapView, EnrollmentView, LandmarkIntelView, 
   AssetRecoveryView, ForensicAuditView, BillingPanelView, LandingPageView, 
   AgentDeploymentView, PassengerEscortView, ChatBot 
-} from './components';
+} from './components/index';
 import PoliceRegistry from './components/PoliceRegistry';
 import PublicDashboard from './components/PublicDashboard';
 import { UserRole } from './types';
@@ -15,7 +15,6 @@ const App: React.FC = () => {
   const [userRole, setUserRole] = useState<UserRole>('PUBLIC');
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // Sync role to window for components that need to know role without props
   useEffect(() => {
     (window as any).currentUserRole = userRole;
   }, [userRole]);
@@ -58,7 +57,6 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-[#02040a] text-slate-100 overflow-hidden font-sans">
-      {/* Background Gradients */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-emerald-500/5 blur-[120px] rounded-full opacity-50"></div>
         <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-500/5 blur-[120px] rounded-full opacity-50"></div>
@@ -66,7 +64,6 @@ const App: React.FC = () => {
 
       {activeTab !== 'landing' && (
         <>
-          {/* Desktop Sidebar */}
           <aside className={`hidden lg:flex flex-col ${sidebarOpen ? 'w-72' : 'w-24'} obsidian-glass m-4 rounded-[2.5rem] transition-all duration-500 z-50 border-white/5 shadow-2xl relative overflow-hidden`}>
             <div className="p-8 mb-4 flex items-center gap-4">
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-transform hover:scale-110 shrink-0 ${userRole === 'PUBLIC' ? 'bg-gradient-to-br from-emerald-400 to-emerald-600' : 'bg-gradient-to-br from-indigo-500 to-indigo-700'}`}>
@@ -101,7 +98,6 @@ const App: React.FC = () => {
             </div>
           </aside>
 
-          {/* Mobile Bottom Navigation */}
           <nav className="lg:hidden fixed bottom-0 left-0 right-0 obsidian-glass border-t border-white/10 z-[100] px-4 py-3 flex justify-around items-center rounded-t-[2rem]">
             {currentNav.map((item) => (
               <button 
@@ -113,10 +109,6 @@ const App: React.FC = () => {
                 <span className="text-[8px] font-black uppercase tracking-tighter">{item.label.split(' ')[0]}</span>
               </button>
             ))}
-            <button onClick={() => setActiveTab('landing')} className="flex flex-col items-center gap-1 p-2 text-rose-500">
-               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-               <span className="text-[8px] font-black uppercase tracking-tighter">Exit</span>
-            </button>
           </nav>
         </>
       )}
@@ -134,9 +126,6 @@ const App: React.FC = () => {
               <div className="hidden md:flex bg-white/5 p-1 rounded-xl border border-white/5">
                 <button onClick={() => enterSystem('PUBLIC')} className={`px-4 py-1.5 text-[9px] font-bold rounded-lg transition-all ${userRole === 'PUBLIC' ? 'bg-emerald-500 text-slate-950 shadow-lg' : 'text-slate-500'}`}>PUBLIC</button>
                 <button onClick={() => enterSystem('OPERATOR')} className={`px-4 py-1.5 text-[9px] font-bold rounded-lg transition-all ${userRole === 'OPERATOR' ? 'bg-indigo-500 text-white shadow-lg' : 'text-slate-500'}`}>COMMAND</button>
-              </div>
-              <div className="w-10 h-10 rounded-xl obsidian-glass flex items-center justify-center border-white/10" onClick={() => setActiveTab('landing')}>
-                 <svg className="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" strokeWidth={2}/></svg>
               </div>
             </div>
           </header>
