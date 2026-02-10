@@ -13,7 +13,7 @@ const Dashboard: React.FC = () => {
   // SOS/Panic State
   const [panicActive, setPanicActive] = useState(false);
   const [panicHoldTime, setPanicHoldTime] = useState(0);
-  const panicIntervalRef = useRef<number | null>(null);
+  const panicIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
@@ -28,11 +28,11 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const handlePanicDown = () => {
-    if (panicIntervalRef.current) window.clearInterval(panicIntervalRef.current);
-    panicIntervalRef.current = window.setInterval(() => {
+    if (panicIntervalRef.current) clearInterval(panicIntervalRef.current);
+    panicIntervalRef.current = setInterval(() => {
       setPanicHoldTime(prev => {
         if (prev >= 100) {
-          if (panicIntervalRef.current) window.clearInterval(panicIntervalRef.current);
+          if (panicIntervalRef.current) clearInterval(panicIntervalRef.current);
           panicIntervalRef.current = null;
           triggerPanic();
           return 100;
@@ -44,7 +44,7 @@ const Dashboard: React.FC = () => {
 
   const handlePanicUp = () => {
     if (panicIntervalRef.current) {
-      window.clearInterval(panicIntervalRef.current);
+      clearInterval(panicIntervalRef.current);
       panicIntervalRef.current = null;
     }
     if (panicHoldTime < 100) setPanicHoldTime(0);

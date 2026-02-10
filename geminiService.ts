@@ -2,11 +2,11 @@
 import { GoogleGenAI, Type, Modality } from "@google/genai";
 import { BackgroundCheck, Vehicle, LandmarkResult, RecoveryPlan, PoliceStation } from "./types";
 
-const getClient = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
+const getClient = () => new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 /**
  * MUSTI PERSONALITY SPECS:
- * - Voice: Calm, deep, smooth, authoritative, and smooth (Sexy military tone).
+ * - Voice: Calm, deep, smooth, authoritative, and sophisticated (Sexy military tone).
  * - Intelligence: Global fusion of FBI, CIA, MOSSAD, KGB, and Nigerian Command.
  */
 export const generateMustiSpeech = async (text: string) => {
