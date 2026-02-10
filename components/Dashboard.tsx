@@ -13,7 +13,7 @@ const Dashboard: React.FC = () => {
   // SOS/Panic State
   const [panicActive, setPanicActive] = useState(false);
   const [panicHoldTime, setPanicHoldTime] = useState(0);
-  const panicIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const panicIntervalRef = useRef<number | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
@@ -28,10 +28,12 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const handlePanicDown = () => {
-    panicIntervalRef.current = setInterval(() => {
+    if (panicIntervalRef.current) window.clearInterval(panicIntervalRef.current);
+    panicIntervalRef.current = window.setInterval(() => {
       setPanicHoldTime(prev => {
         if (prev >= 100) {
-          if (panicIntervalRef.current) clearInterval(panicIntervalRef.current);
+          if (panicIntervalRef.current) window.clearInterval(panicIntervalRef.current);
+          panicIntervalRef.current = null;
           triggerPanic();
           return 100;
         }
@@ -42,7 +44,7 @@ const Dashboard: React.FC = () => {
 
   const handlePanicUp = () => {
     if (panicIntervalRef.current) {
-      clearInterval(panicIntervalRef.current);
+      window.clearInterval(panicIntervalRef.current);
       panicIntervalRef.current = null;
     }
     if (panicHoldTime < 100) setPanicHoldTime(0);
@@ -94,21 +96,25 @@ const Dashboard: React.FC = () => {
     try {
       const base64 = await generateMustiSpeech(text);
       if (base64) {
-        if (!audioContextRef.current) {
-          audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+        let ctx = audioContextRef.current;
+        if (!ctx) {
+          ctx = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+          audioContextRef.current = ctx;
         }
         const data = atob(base64);
         const bytes = new Uint8Array(data.length);
         for (let i = 0; i < data.length; i++) bytes[i] = data.charCodeAt(i);
         const dataInt16 = new Int16Array(bytes.buffer);
-        const buffer = audioContextRef.current.createBuffer(1, dataInt16.length, 24000);
+        const buffer = ctx.createBuffer(1, dataInt16.length, 24000);
         const channelData = buffer.getChannelData(0);
         for (let i = 0; i < dataInt16.length; i++) channelData[i] = dataInt16[i] / 32768.0;
-        const source = audioContextRef.current.createBufferSource();
+        const source = ctx.createBufferSource();
         source.buffer = buffer;
-        source.connect(audioContextRef.current.destination);
+        source.connect(ctx.destination);
         source.onended = () => setIsSpeaking(false);
         source.start();
+      } else {
+        setIsSpeaking(false);
       }
     } catch (err) {
       console.error(err);
