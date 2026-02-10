@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Area Guard | Neural Security Sentinel</title>
+    <title>Area Security Plug | Neural Sentinel Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,800;1,800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -35,7 +35,7 @@
 
         .holographic-overlay {
           position: relative;
-          background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+          background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 80%);
         }
 
         .holographic-overlay::before {
@@ -43,64 +43,36 @@
           position: absolute;
           inset: 0;
           background-image: 
-            linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-          background-size: 30px 30px;
+            linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+          background-size: 32px 32px;
           pointer-events: none;
         }
 
-        .crt-monitor {
-          position: relative;
-          overflow: hidden;
-          background: #000;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+        @keyframes scanline {
+          0% { transform: translateY(-100vh); }
+          100% { transform: translateY(100vh); }
         }
 
-        .crt-monitor::after {
-          content: " ";
-          display: block;
-          position: absolute;
-          top: 0; left: 0; bottom: 0; right: 0;
-          background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-          z-index: 2;
-          background-size: 100% 3px, 3px 100%;
+        .scanline {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 4px;
+          background: linear-gradient(to bottom, transparent, rgba(99, 102, 241, 0.1), transparent);
+          z-index: 100;
           pointer-events: none;
-        }
-
-        @keyframes neural-orbit {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-
-        .orbit-ring {
-          animation: neural-orbit linear infinite;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar { 
-          width: 5px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track { 
-          background: var(--obsidian); 
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb { 
-          background: #1e293b; 
-          border-radius: 10px;
-        }
-
-        @keyframes scan {
-          from { transform: translateY(-100px); }
-          to { transform: translateY(120vh); }
+          animation: scanline 8s linear infinite;
         }
 
         .glow-text {
-          text-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+          text-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
         }
 
-        .area-title-gradient {
-          background: linear-gradient(to right, #ffffff 30%, #6366f1 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: var(--obsidian); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
     </style>
 <script type="importmap">
 {
@@ -116,6 +88,7 @@
 </script>
 </head>
 <body class="custom-scrollbar holographic-overlay">
+    <div class="scanline"></div>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
 </body>
