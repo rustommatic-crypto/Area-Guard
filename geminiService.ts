@@ -8,8 +8,6 @@ const getClient = () => new GoogleGenAI({ apiKey: process.env.API_KEY as string 
  * MUSTI PERSONALITY SPECS:
  * - Persona: General Mustapha (Musti).
  * - Background: Senior Nigerian Military Officer, calm, highly decorated.
- * - Voice: Distinctive Hausa-English accent, deep, authoritative, and unshakably calm.
- * - Intelligence: Elite tactical fusion of Nigerian Command and global security protocols.
  */
 export const generateMustiSpeech = async (text: string) => {
   const ai = getClient();
@@ -17,24 +15,51 @@ export const generateMustiSpeech = async (text: string) => {
     model: "gemini-2.5-flash-preview-tts",
     contents: [{ 
       parts: [{ 
-        text: `You are General Mustapha (Musti), a senior Nigerian military officer of Hausa heritage. 
-        Your voice is exceptionally calm, deep, and carries the weight of 30 years in high command. 
-        You have a sophisticated Hausa-English accent. You never panic. You are a sentinel.
-        Say this precisely as General Mustapha, ending with tactical closure like 'Over.' or 'Sentinel out.': ${text}` 
+        text: `You are General Mustapha (Musti), a senior Nigerian military officer. 
+        Your voice is calm, deep, and authoritative with a Hausa-English accent. 
+        Say this precisely as General Mustapha: ${text}` 
       }] 
     }],
     config: {
       responseModalities: [Modality.AUDIO],
       speechConfig: {
         voiceConfig: {
-          prebuiltVoiceConfig: { voiceName: 'Fenrir' }, // Deep, authoritative baseline
+          prebuiltVoiceConfig: { voiceName: 'Fenrir' },
         },
       },
     },
   });
 
-  const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-  return base64Audio;
+  return response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+};
+
+/**
+ * Analyze stealth-captured frames for tactical intelligence.
+ */
+export const analyzeStealthCapture = async (imageB64: string): Promise<{ threatDetected: boolean; summary: string; locationClues: string[] }> => {
+  const ai = getClient();
+  const response = await ai.models.generateContent({
+    model: 'gemini-3-flash-preview',
+    contents: {
+      parts: [
+        { inlineData: { data: imageB64, mimeType: 'image/jpeg' } },
+        { text: "TACTICAL RECON: This is a stealth-captured frame from a high-risk security alert. Identify any visible people, their stress levels, weapons, or landmarks. Return JSON." }
+      ]
+    },
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          threatDetected: { type: Type.BOOLEAN },
+          summary: { type: Type.STRING },
+          locationClues: { type: Type.ARRAY, items: { type: Type.STRING } }
+        },
+        required: ["threatDetected", "summary", "locationClues"]
+      }
+    }
+  });
+  return JSON.parse(response.text || "{}");
 };
 
 export const searchPoliceStationsOnMap = async (query: string, lat?: number, lng?: number): Promise<PoliceStation[]> => {
@@ -86,7 +111,7 @@ export const runDeepPersonnelScan = async (name: string, nin: string): Promise<B
   const ai = getClient();
   const response = await ai.models.generateContent({
     model: 'gemini-3-pro-preview',
-    contents: `Perform a deep risk analysis for personnel: ${name} (NIN: ${nin}). Use your global security training.`,
+    contents: `Perform a deep risk analysis for personnel: ${name} (NIN: ${nin}).`,
     config: {
       thinkingConfig: { thinkingBudget: 4000 },
       responseMimeType: "application/json",
