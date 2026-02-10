@@ -1,8 +1,12 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
-const ChatBot: React.FC = () => {
+interface ChatBotProps {
+  activeTab: string;
+}
+
+const ChatBot: React.FC<ChatBotProps> = ({ activeTab }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: 'user' | 'model', text: string }[]>([
     { role: 'model', text: 'Operational Core Ready. Awaiting tactical query.' }
@@ -10,6 +14,7 @@ const ChatBot: React.FC = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatSessionRef = useRef<any>(null);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -29,19 +34,48 @@ const ChatBot: React.FC = () => {
 
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-pro-preview',
-        contents: userMsg,
-        config: {
-          systemInstruction: 'You are Area Guard Command Assistant. You help fleet managers and security agents manage vehicles and personnel in high-risk zones. Be professional, concise, and prioritize mission security. Use military/tactical terminology where appropriate.',
-          thinkingConfig: { thinkingBudget: 2000 }
-        }
-      });
       
-      setMessages(prev => [...prev, { role: 'model', text: response.text || "Encryption error. Protocol reset required." }]);
+      if (!chatSessionRef.current) {
+        chatSessionRef.current = ai.chats.create({
+          model: 'gemini-3-flash-preview',
+          config: {
+            systemInstruction: `You are the Area Guard Command Assistant. 
+            You help fleet managers and security agents manage vehicles and personnel in high-risk zones. 
+            Be professional, concise, and prioritize mission security. Use military/tactical terminology.
+            CONTEXT: The user is currently viewing the [${activeTab.toUpperCase()}] section of the application. 
+            Provide advice relevant to this specific view if applicable.`,
+          },
+        });
+      }
+
+      setMessages(prev => [...prev, { role: 'model', text: '' }]);
+      
+      const streamResponse = await chatSessionRef.current.sendMessageStream({ message: userMsg });
+      
+      let fullText = '';
+      for await (const chunk of streamResponse) {
+        const c = chunk as GenerateContentResponse;
+        const chunkText = c.text || "";
+        fullText += chunkText;
+        
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = { role: 'model', text: fullText };
+          return updated;
+        });
+      }
+
+      if (!fullText) {
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = { role: 'model', text: "Encryption error. Protocol reset required. Over." };
+          return updated;
+        });
+      }
+
     } catch (err) {
       console.error(err);
-      setMessages(prev => [...prev, { role: 'model', text: "Signal lost. Check API connectivity." }]);
+      setMessages(prev => [...prev, { role: 'model', text: "Signal lost. Check API connectivity. Over." }]);
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +99,7 @@ const ChatBot: React.FC = () => {
               <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
               <div>
                 <span className="text-xs font-black text-white uppercase tracking-widest">Command Assistant</span>
-                <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">Active Link: PRO-LEVEL-7</p>
+                <p className="text-[8px] text-slate-500 font-bold uppercase tracking-widest">Context: {activeTab.replace(/_/g, ' ').toUpperCase()}</p>
               </div>
             </div>
             <button onClick={() => setIsOpen(false)} className="text-slate-500 hover:text-white transition-colors p-2">
@@ -76,16 +110,18 @@ const ChatBot: React.FC = () => {
           <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] p-4 rounded-[1.5rem] text-xs font-medium leading-relaxed ${
-                  msg.role === 'user' 
-                    ? 'bg-indigo-600 text-white rounded-tr-none shadow-lg' 
-                    : 'bg-white/5 text-slate-200 rounded-tl-none border border-white/10'
-                }`}>
-                  {msg.text}
-                </div>
+                {msg.text && (
+                  <div className={`max-w-[85%] p-4 rounded-[1.5rem] text-xs font-medium leading-relaxed ${
+                    msg.role === 'user' 
+                      ? 'bg-indigo-600 text-white rounded-tr-none shadow-lg' 
+                      : 'bg-white/5 text-slate-200 rounded-tl-none border border-white/10'
+                  }`}>
+                    {msg.text}
+                  </div>
+                )}
               </div>
             ))}
-            {isLoading && (
+            {isLoading && !messages[messages.length - 1].text && (
               <div className="flex justify-start">
                 <div className="bg-white/5 p-4 rounded-2xl rounded-tl-none border border-white/10">
                   <div className="flex space-x-1.5">

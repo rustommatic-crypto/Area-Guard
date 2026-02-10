@@ -1,6 +1,5 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { AssetStatus } from '../types';
 
 const LeaseRegistry: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
@@ -52,7 +51,7 @@ const LeaseRegistry: React.FC = () => {
     <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h3 className="text-4xl font-black text-white italic tracking-tighter uppercase">Musti Pin Enrollment</h3>
+          <h3 className="text-4xl font-black text-white italic tracking-tighter uppercase">Musti Pin Registry</h3>
           <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mt-1">Identity & Integrity Verification Protocol</p>
         </div>
         <button 
@@ -66,7 +65,7 @@ const LeaseRegistry: React.FC = () => {
       <div className="obsidian-glass rounded-[3rem] p-12 border border-white/5">
          {!isRegistered ? (
            <div className="text-center py-20 opacity-30">
-              <p className="text-xl font-black text-white uppercase italic tracking-tighter">Musti Pin Registry</p>
+              <p className="text-xl font-black text-white uppercase italic tracking-tighter">Musti Pin Database</p>
               <p className="text-xs text-slate-500 uppercase mt-4">No active personnel monitoring links detected.</p>
            </div>
          ) : (
@@ -102,43 +101,32 @@ const LeaseRegistry: React.FC = () => {
            <div className="bg-slate-900 border border-white/10 w-full max-w-2xl rounded-[3rem] overflow-hidden flex flex-col max-h-[90vh] shadow-4xl relative">
               <div className="p-10 border-b border-white/5 flex justify-between items-center">
                  <div>
-                    <h4 className="text-2xl font-black text-white italic uppercase tracking-tighter">Subject Enrollment Terminal</h4>
+                    <h4 className="text-2xl font-black text-white italic uppercase tracking-tighter">Musti Enrollment Terminal</h4>
                     <p className="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest mt-2 italic">Phase: {step.toUpperCase()}</p>
                  </div>
-                 <button onClick={() => setShowModal(false)} className="w-12 h-12 rounded-2xl obsidian-glass flex items-center justify-center text-slate-500 hover:text-white transition-all"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" strokeWidth={2.5}/></svg></button>
+                 <button onClick={() => setShowModal(false)} className="w-12 h-12 rounded-2xl obsidian-glass flex items-center justify-center text-slate-500 hover:text-white transition-all">
+                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" strokeWidth={2.5}/></svg>
+                 </button>
               </div>
 
               <div className="p-10 overflow-y-auto custom-scrollbar flex-1">
                  {step === 'selection' && (
                    <div className="space-y-10">
-                      <p className="text-center text-[10px] text-slate-500 font-black uppercase tracking-[0.2em]">Select Enrollment Category</p>
+                      <p className="text-center text-[10px] text-slate-500 font-black uppercase tracking-[0.2em]">Select Musti Category</p>
                       <div className="grid grid-cols-2 gap-8">
                          <button onClick={() => { setOnboardType('EMPLOYEE'); setStep('profile'); }} className="flex flex-col items-center gap-6 p-10 obsidian-glass rounded-[3rem] border border-white/5 hover:border-indigo-500/50 transition-all group">
-                            <div className="w-20 h-20 rounded-3xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform"><svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" strokeWidth={2}/></svg></div>
                             <span className="text-sm font-black text-white uppercase tracking-widest">New Staff</span>
                          </button>
                          <button onClick={() => { setOnboardType('GUARANTOR'); setStep('profile'); }} className="flex flex-col items-center gap-6 p-10 obsidian-glass rounded-[3rem] border border-white/5 hover:border-emerald-500/50 transition-all group">
-                            <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform"><svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeWidth={2}/></svg></div>
                             <span className="text-sm font-black text-white uppercase tracking-widest">Guarantor</span>
                          </button>
                       </div>
-                      <p className="text-[9px] text-center text-slate-600 font-bold uppercase tracking-widest leading-relaxed">The subject will receive a Musti Pin code for verification. <br/>This code establishes the security anchor.</p>
                    </div>
                  )}
 
                  {step === 'profile' && (
                    <div className="space-y-6">
-                      <input type="text" placeholder="Full Legal Name" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-sm text-white focus:border-indigo-500 outline-none" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
-                      <div className="grid grid-cols-2 gap-4">
-                        <input type="text" placeholder="NIN" className="bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-sm text-white focus:border-indigo-500 outline-none font-mono" value={formData.nin} onChange={e => setFormData({...formData, nin: e.target.value})} />
-                        <input type="text" placeholder="Phone" className="bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-sm text-white focus:border-indigo-500 outline-none" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
-                      </div>
-                      <select className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-sm text-white focus:border-indigo-500 outline-none appearance-none" value={formData.jobType} onChange={e => setFormData({...formData, jobType: e.target.value})}>
-                        <option value="" disabled className="bg-slate-900">Assigned Role</option>
-                        <option value="Executive Driver" className="bg-slate-900">Executive Driver</option>
-                        <option value="Home Guard" className="bg-slate-900">Home Guard</option>
-                        <option value="Business Assistant" className="bg-slate-900">Business Assistant</option>
-                      </select>
+                      <input type="text" placeholder="Full Legal Name" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-sm text-white outline-none" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
                       <button onClick={() => { setStep('biometrics'); startCamera(); }} className="w-full py-6 bg-indigo-600 text-white font-black rounded-3xl text-xs uppercase tracking-widest shadow-2xl transition-all">Proceed to Verification</button>
                    </div>
                  )}
@@ -149,12 +137,10 @@ const LeaseRegistry: React.FC = () => {
                          {!formData.photo ? (
                            <>
                              <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover scale-x-[-1]" />
-                             <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-emerald-500/30 animate-scan shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
                              <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center">
-                                <button onClick={capturePhoto} className="w-20 h-20 bg-white/10 border-4 border-white rounded-full flex items-center justify-center transition-all active:scale-90 shadow-2xl">
+                                <button onClick={capturePhoto} className="w-20 h-20 bg-white/10 border-4 border-white rounded-full flex items-center justify-center shadow-2xl">
                                    <div className="w-8 h-8 bg-indigo-500 rounded-full"></div>
                                 </button>
-                                <p className="text-[10px] font-black text-white uppercase tracking-[0.2em] mt-4">Capture Face Identity</p>
                              </div>
                            </>
                          ) : (
@@ -162,15 +148,9 @@ const LeaseRegistry: React.FC = () => {
                               <img src={`data:image/jpeg;base64,${formData.photo}`} className="w-full h-full object-cover" />
                               <div className="absolute inset-0 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-12 text-center">
                                  {isScanning ? (
-                                   <div className="space-y-6">
-                                     <div className="w-14 h-14 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin mx-auto"></div>
-                                     <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest animate-pulse">Establishing Integrity Link...</p>
-                                   </div>
+                                   <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest animate-pulse">Establishing Integrity Link...</p>
                                  ) : (
-                                   <div className="space-y-8">
-                                      <p className="text-white font-black uppercase tracking-tight">Identity Visual Match: 100%</p>
-                                      <button onClick={handleComplete} className="w-full py-5 bg-indigo-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl">Confirm & Generate Musti Pin</button>
-                                   </div>
+                                   <button onClick={handleComplete} className="w-full py-5 bg-indigo-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest">Generate Musti Pin</button>
                                  )}
                               </div>
                            </div>
@@ -180,36 +160,15 @@ const LeaseRegistry: React.FC = () => {
                  )}
 
                  {step === 'success' && (
-                    <div className="text-center py-10 space-y-8 animate-in zoom-in-95">
-                       <div className="w-24 h-24 rounded-full bg-emerald-500 flex items-center justify-center mx-auto shadow-2xl">
-                          <svg className="w-12 h-12 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                       </div>
-                       <div className="space-y-3">
-                          <h4 className="text-3xl font-black text-white italic uppercase tracking-tighter leading-none">Enrollment Locked</h4>
-                          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em]">The Musti Pin has been synchronized. Subject is now monitored.</p>
-                       </div>
-                       <div className="bg-black/40 p-8 rounded-[2rem] border border-white/5 text-left font-mono text-[10px] text-emerald-500 space-y-2">
-                          <p>>> STEALTH_AGENT: DEPLOYED</p>
-                          <p>>> MUSTI_PIN: ACTIVE_HLR</p>
-                          <p>>> PATTERN_LEARNING: INITIATED</p>
-                       </div>
-                       <button onClick={() => { setShowModal(false); setStep('selection'); }} className="w-full py-6 bg-white text-slate-900 font-black rounded-3xl text-xs uppercase tracking-widest">Return to Dashboard</button>
+                    <div className="text-center py-10 space-y-8">
+                       <h4 className="text-3xl font-black text-white italic uppercase tracking-tighter leading-none">Musti Pin Secured</h4>
+                       <button onClick={() => { setShowModal(false); setStep('selection'); }} className="w-full py-6 bg-white text-slate-900 font-black rounded-3xl text-xs uppercase tracking-widest">Return to Command</button>
                     </div>
                  )}
               </div>
            </div>
         </div>
       )}
-      <style>{`
-        @keyframes scan {
-          0% { transform: translateY(-100px); }
-          50% { transform: translateY(100px); }
-          100% { transform: translateY(-100px); }
-        }
-        .animate-scan {
-          animation: scan 4s linear infinite;
-        }
-      `}</style>
     </div>
   );
 };
