@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mustapha | Neural Security Sentinel</title>
+    <title>Area Guard | Neural Security Sentinel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,800;1,800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -87,24 +87,19 @@
           border-radius: 10px;
         }
 
-        .tactical-shimmer {
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.05),
-            transparent
-          );
-          background-size: 200% 100%;
-          animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
+        @keyframes scan {
+          from { transform: translateY(-100px); }
+          to { transform: translateY(120vh); }
         }
 
         .glow-text {
-          text-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+          text-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .area-title-gradient {
+          background: linear-gradient(to right, #ffffff 30%, #6366f1 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
     </style>
 <script type="importmap">
