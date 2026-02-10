@@ -4,29 +4,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Area Guard | Tactical Asset Intelligence</title>
+    <title>Mustapha | Neural Security Sentinel</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,800;1,800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+          --obsidian: #020408;
+          --slate-950: #05070a;
+          --indigo-accent: #6366f1;
+          --emerald-accent: #10b981;
+        }
+
         body { 
           font-family: 'Plus Jakarta Sans', sans-serif; 
-          background-color: #02040a; 
+          background-color: var(--obsidian); 
           color: #f8fafc; 
-          overflow-x: hidden; 
-          letter-spacing: -0.01em;
+          margin: 0;
+          padding: 0;
+          overflow-x: hidden;
+          -webkit-font-smoothing: antialiased;
         }
+        
         .obsidian-glass {
-          background: rgba(13, 17, 23, 0.7);
-          backdrop-filter: blur(16px);
-          border: 1px solid rgba(255, 255, 255, 0.05);
+          background: rgba(8, 10, 15, 0.6);
+          backdrop-filter: blur(40px);
+          -webkit-backdrop-filter: blur(40px);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
-        @keyframes scan {
-          0% { transform: translateY(-100px); }
-          50% { transform: translateY(100px); }
-          100% { transform: translateY(-100px); }
+
+        .holographic-overlay {
+          position: relative;
+          background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+        }
+
+        .holographic-overlay::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+          background-size: 30px 30px;
+          pointer-events: none;
+        }
+
+        .crt-monitor {
+          position: relative;
+          overflow: hidden;
+          background: #000;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .crt-monitor::after {
+          content: " ";
+          display: block;
+          position: absolute;
+          top: 0; left: 0; bottom: 0; right: 0;
+          background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+          z-index: 2;
+          background-size: 100% 3px, 3px 100%;
+          pointer-events: none;
+        }
+
+        @keyframes neural-orbit {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        .orbit-ring {
+          animation: neural-orbit linear infinite;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { 
+          width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track { 
+          background: var(--obsidian); 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb { 
+          background: #1e293b; 
+          border-radius: 10px;
+        }
+
+        .tactical-shimmer {
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.05),
+            transparent
+          );
+          background-size: 200% 100%;
+          animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+
+        .glow-text {
+          text-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
         }
     </style>
 <script type="importmap">
@@ -43,7 +121,7 @@
 }
 </script>
 </head>
-<body>
+<body class="custom-scrollbar holographic-overlay">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
 </body>

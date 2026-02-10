@@ -1,11 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { NAV_ITEMS, PUBLIC_NAV_ITEMS } from './constants';
+import { NAV_ITEMS } from './constants';
 import { 
   DashboardView, TacticalMapView, EnrollmentView, LandmarkIntelView, 
   AssetRecoveryView, ForensicAuditView, BillingPanelView, LandingPageView, 
   AgentDeploymentView, PassengerEscortView, ChatBot 
 } from './components/index';
+import MustaphaCall from './components/MustaphaCall';
+import Bodyguard from './components/Bodyguard';
+import FamilyShield from './components/FamilyShield';
 import PoliceRegistry from './components/PoliceRegistry';
 import PublicDashboard from './components/PublicDashboard';
 import { UserRole } from './types';
@@ -15,34 +18,20 @@ const App: React.FC = () => {
   const [userRole, setUserRole] = useState<UserRole>('PUBLIC');
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  useEffect(() => {
-    (window as any).currentUserRole = userRole;
-  }, [userRole]);
-
   const enterSystem = (role: UserRole) => {
     setUserRole(role);
-    setActiveTab('dashboard');
+    setActiveTab('dashboard'); // Redirect to the newly designed Dashboard first
   };
 
   const renderContent = () => {
-    if (activeTab === 'landing') {
-      return <LandingPageView onEnter={enterSystem} />;
-    }
-
-    if (userRole === 'PUBLIC') {
-      switch (activeTab) {
-        case 'dashboard': return <PublicDashboard />;
-        case 'registry': return <EnrollmentView />;
-        case 'billing': return <BillingPanelView />;
-        default: return <PublicDashboard />;
-      }
-    }
+    if (activeTab === 'landing') return <LandingPageView onEnter={enterSystem} />;
 
     switch (activeTab) {
       case 'dashboard': return <DashboardView />;
+      case 'mustapha': return <MustaphaCall />;
+      case 'bodyguard': return <Bodyguard />;
+      case 'family': return <FamilyShield />;
       case 'tracking': return <TacticalMapView />;
-      case 'passengers': return <PassengerEscortView />;
-      case 'agent': return <AgentDeploymentView />;
       case 'registry': return <EnrollmentView />;
       case 'police': return <PoliceRegistry />;
       case 'intel': return <LandmarkIntelView />;
@@ -53,87 +42,51 @@ const App: React.FC = () => {
     }
   };
 
-  const currentNav = userRole === 'PUBLIC' ? PUBLIC_NAV_ITEMS : NAV_ITEMS;
-
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-[#02040a] text-slate-100 overflow-hidden font-sans">
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-emerald-500/5 blur-[120px] rounded-full opacity-50"></div>
-        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-500/5 blur-[120px] rounded-full opacity-50"></div>
-      </div>
-
+    <div className="flex h-screen bg-[#02040a] text-slate-100 font-sans overflow-hidden">
       {activeTab !== 'landing' && (
-        <>
-          <aside className={`hidden lg:flex flex-col ${sidebarOpen ? 'w-72' : 'w-24'} obsidian-glass m-4 rounded-[2.5rem] transition-all duration-500 z-50 border-white/5 shadow-2xl relative overflow-hidden`}>
-            <div className="p-8 mb-4 flex items-center gap-4">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-transform hover:scale-110 shrink-0 ${userRole === 'PUBLIC' ? 'bg-gradient-to-br from-emerald-400 to-emerald-600' : 'bg-gradient-to-br from-indigo-500 to-indigo-700'}`}>
-                 <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-              </div>
-              {sidebarOpen && (
-                <div className="animate-in fade-in slide-in-from-left-2">
-                  <p className="font-extrabold text-sm tracking-tighter uppercase leading-none text-white">Area Guard</p>
-                  <p className="text-[10px] font-medium text-slate-500 uppercase tracking-widest mt-1">Assets & Persons</p>
-                </div>
-              )}
+        <aside className={`${sidebarOpen ? 'w-72' : 'w-24'} obsidian-glass m-4 rounded-[2.5rem] transition-all duration-500 z-50 border-white/5 hidden lg:flex flex-col shrink-0`}>
+          <div className="p-8 mb-4 flex items-center gap-4">
+            <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shrink-0">
+               <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             </div>
-
-            <nav className="flex-1 px-4 space-y-2 overflow-y-auto custom-scrollbar">
-              {currentNav.map((item) => (
-                <button 
-                  key={item.id} 
-                  onClick={() => setActiveTab(item.id)} 
-                  className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all relative group ${activeTab === item.id ? 'bg-white/5 text-white shadow-sm' : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.02]'}`}
-                >
-                  {activeTab === item.id && <div className={`absolute left-0 w-1 h-6 rounded-full ${userRole === 'PUBLIC' ? 'bg-emerald-500' : 'bg-indigo-500'}`}></div>}
-                  <svg className={`w-6 h-6 flex-shrink-0 transition-transform ${activeTab === item.id ? 'scale-110' : 'group-hover:scale-105'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d={item.icon} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  {sidebarOpen && <span className="text-[11px] font-bold uppercase tracking-widest truncate">{item.label}</span>}
-                </button>
-              ))}
-            </nav>
-
-            <div className="p-6 border-t border-white/5">
-              <button onClick={() => setSidebarOpen(!sidebarOpen)} className="w-full flex items-center justify-center p-3 text-slate-500 hover:text-white transition-colors obsidian-glass rounded-xl">
-                <svg className={`w-5 h-5 transition-transform ${sidebarOpen ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 19l-7-7 7-7m8 14l-7-7 7-7" strokeWidth={2.5}/></svg>
-              </button>
-            </div>
-          </aside>
-
-          <nav className="lg:hidden fixed bottom-0 left-0 right-0 obsidian-glass border-t border-white/10 z-[100] px-4 py-3 flex justify-around items-center rounded-t-[2rem]">
-            {currentNav.map((item) => (
+            {sidebarOpen && <p className="font-extrabold text-sm tracking-tighter uppercase text-white">Area Guard</p>}
+          </div>
+          <nav className="flex-1 px-4 space-y-2 overflow-y-auto custom-scrollbar">
+            {NAV_ITEMS.map((item) => (
               <button 
                 key={item.id} 
-                onClick={() => setActiveTab(item.id)} 
-                className={`flex flex-col items-center gap-1 p-2 transition-all ${activeTab === item.id ? (userRole === 'PUBLIC' ? 'text-emerald-400' : 'text-indigo-400') : 'text-slate-500'}`}
+                onClick={() => setActiveTab(item.id === 'mustapha' ? 'dashboard' : item.id)} 
+                className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all ${activeTab === item.id ? 'bg-white/5 text-white' : 'text-slate-500 hover:text-white'}`}
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d={item.icon} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"/></svg>
-                <span className="text-[8px] font-black uppercase tracking-tighter">{item.label.split(' ')[0]}</span>
+                <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d={item.icon} strokeWidth={2}/></svg>
+                {sidebarOpen && <span className="text-[11px] font-bold uppercase tracking-widest truncate">{item.label}</span>}
               </button>
             ))}
           </nav>
-        </>
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="m-6 p-3 bg-white/5 rounded-xl flex justify-center text-slate-500 hover:text-white transition-all">
+             <svg className={`w-5 h-5 transition-transform ${sidebarOpen ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11 19l-7-7 7-7" strokeWidth={2}/></svg>
+          </button>
+        </aside>
       )}
 
-      <main className="flex-1 flex flex-col overflow-hidden relative pb-20 lg:pb-0">
-        {activeTab !== 'landing' && (
-          <header className="h-16 lg:h-20 px-6 lg:px-10 flex items-center justify-between z-40 bg-slate-950/20 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none">
-            <div className="flex items-center gap-4">
-              <span className="text-[10px] lg:text-[11px] font-black text-slate-600 uppercase tracking-[0.2em] hidden xs:block">Context</span>
-              <div className="h-4 w-[1px] bg-white/10 hidden xs:block"></div>
-              <span className="text-xs lg:text-sm font-extrabold text-white tracking-tight uppercase italic">{currentNav.find(n => n.id === activeTab)?.label}</span>
-            </div>
-
-            <div className="flex items-center gap-4 lg:gap-8">
-              <div className="hidden md:flex bg-white/5 p-1 rounded-xl border border-white/5">
-                <button onClick={() => enterSystem('PUBLIC')} className={`px-4 py-1.5 text-[9px] font-bold rounded-lg transition-all ${userRole === 'PUBLIC' ? 'bg-emerald-500 text-slate-950 shadow-lg' : 'text-slate-500'}`}>PUBLIC</button>
-                <button onClick={() => enterSystem('OPERATOR')} className={`px-4 py-1.5 text-[9px] font-bold rounded-lg transition-all ${userRole === 'OPERATOR' ? 'bg-indigo-500 text-white shadow-lg' : 'text-slate-500'}`}>COMMAND</button>
-              </div>
-            </div>
-          </header>
-        )}
-        <div className="flex-1 overflow-y-auto p-4 lg:p-10 custom-scrollbar">
-          {renderContent()}
+      <main className="flex-1 flex flex-col relative h-full overflow-hidden">
+        {/* Main Scrolling Surface */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 lg:p-10 custom-scrollbar overscroll-contain">
+          <div className="max-w-7xl mx-auto w-full pb-24 lg:pb-0">
+            {renderContent()}
+          </div>
         </div>
-        {activeTab !== 'landing' && <ChatBot />}
+
+        {activeTab !== 'landing' && (
+          <div className="fixed bottom-10 left-1/2 -translate-x-1/2 obsidian-glass px-8 py-4 rounded-[2.5rem] flex items-center gap-8 border border-rose-500/20 shadow-4xl lg:hidden z-[100]">
+             <button onClick={() => setActiveTab('dashboard')} className={`${activeTab === 'dashboard' ? 'text-indigo-400' : 'text-white'}`}><svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" strokeWidth={2}/></svg></button>
+             <button onClick={() => setActiveTab('family')} className={`${activeTab === 'family' ? 'text-indigo-400' : 'text-slate-400'}`}><svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" strokeWidth={2}/></svg></button>
+             <div className="w-px h-8 bg-white/10 mx-2"></div>
+             <button onClick={() => setActiveTab('billing')} className={`${activeTab === 'billing' ? 'text-indigo-400' : 'text-slate-400'}`}><svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" strokeWidth={2}/></svg></button>
+          </div>
+        )}
+        <ChatBot />
       </main>
     </div>
   );

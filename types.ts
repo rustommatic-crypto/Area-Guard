@@ -7,17 +7,53 @@ export enum AssetStatus {
   SOS = 'SOS',
   DEFAULT = 'DEFAULT',
   RECOVERED = 'RECOVERED',
-  STOLEN = 'STOLEN'
+  STOLEN = 'STOLEN',
+  SENTINEL_MODE = 'SENTINEL_MODE'
 }
 
-export type UserRole = 'PUBLIC' | 'OPERATOR' | 'ADMIN';
+export type EscortMode = 'INTRA_CITY' | 'INTERSTATE' | 'IDLE';
 
-export interface FeatureAccess {
-  gpsTracking: boolean;
-  simTriangulation: boolean;
-  socialGraph: boolean;
-  forensicReports: boolean;
-  policeDispatch: boolean;
+export type UserTier = 'PERSONAL' | 'FAMILY' | 'BUSINESS' | 'NONE';
+
+export type UserRole = 'PUBLIC' | 'OPERATOR' | 'ADMIN' | 'FAMILY_HEAD' | 'PROTECTED_MEMBER';
+
+export interface PoliceStation {
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  lat: number;
+  lng: number;
+  commandLevel?: 'Division' | 'Area' | 'State' | 'Zonal';
+  contactPerson?: string;
+}
+
+export interface Vehicle {
+  id: string;
+  plate: string;
+  phone: string;
+  driverName: string;
+  nin?: string;
+  status: AssetStatus;
+  tamperStatus: TamperStatus;
+  lat: number;
+  lng: number;
+  accuracy: number;
+  source: SignalSource;
+  orgId: string;
+  imei: string;
+  model: string;
+  lastPing: string;
+  paymentScore: number;
+  batteryLevel: number;
+  guarantors: any[];
+  agent?: {
+    version: string;
+    isStealth: boolean;
+    permissions: string[];
+    batteryDrain: string;
+    lastSync: string;
+  };
 }
 
 export enum SignalSource {
@@ -33,92 +69,6 @@ export enum TamperStatus {
   POWER_CUT = 'POWER_CUT'
 }
 
-export interface ContactNode {
-  name: string;
-  phone: string;
-  callFrequency: number;
-  lastContact: string;
-  isTrackable: boolean;
-}
-
-export interface BackgroundCheck {
-  ninStatus: 'VERIFIED' | 'FAILED' | 'PENDING';
-  loanDefaulter: boolean;
-  registryHits: number;
-  socialMediaScore: number;
-  simAgeDays: number;
-  riskAssessment: string;
-}
-
-export interface M2MTelemetry {
-  iccid: string;
-  carrier: string;
-  signalDbm: number;
-  dataUsage: string;
-  ipAddress: string;
-  isESIM: boolean;
-}
-
-export interface ShadowAgentStatus {
-  version: string;
-  isStealth: boolean;
-  permissions: string[];
-  batteryDrain: string;
-  lastSync: string;
-  scrapedContacts?: ContactNode[];
-}
-
-export interface Vehicle {
-  id: string;
-  plate: string;
-  phone: string;
-  driverName: string;
-  nin?: string;
-  status: AssetStatus;
-  tamperStatus: TamperStatus;
-  lat: number;
-  lng: number;
-  accuracy: number;
-  source: SignalSource;
-  agent?: ShadowAgentStatus;
-  background?: BackgroundCheck;
-  m2m?: M2MTelemetry;
-  orgId: string;
-  imei: string;
-  model: string;
-  lastPing: string;
-  paymentScore: number;
-  batteryLevel: number;
-  unlockedFeatures?: FeatureAccess;
-  guarantors: { 
-    name: string; 
-    phone: string; 
-    relationship: string; 
-    status: 'FORM_PENDING' | 'INFILTRATED';
-    locationCaptured?: { lat: number; lng: number; address: string };
-  }[];
-}
-
-export interface PoliceStation {
-  id: string;
-  name: string;
-  address: string;
-  phone: string;
-  distance?: string;
-  lat: number;
-  lng: number;
-  commandLevel?: 'Division' | 'Area' | 'State' | 'Zonal';
-  contactPerson?: string;
-}
-
-export interface RecoveryPlan {
-  steps: string[];
-  riskLevel: 'Low' | 'Medium' | 'High';
-  tacticalAdvice: string;
-}
-
-export type TrackerType = 'decoy' | 'ghost' | 'wearable';
-
 export interface LandmarkResult {
   identified: string[];
   description: string;
@@ -126,14 +76,10 @@ export interface LandmarkResult {
   riskAssessment: string;
 }
 
-export interface AuditReport {
-  id: string;
-  timestamp: string;
-  assetPlate: string;
-  operator: string;
-  action: string;
-  finding: string;
-  hash: string;
+export interface RecoveryPlan {
+  steps: string[];
+  riskLevel: 'Low' | 'Medium' | 'High';
+  tacticalAdvice: string;
 }
 
 export interface Passenger {
@@ -152,4 +98,25 @@ export interface InterstateBus {
   eta: string;
   progress: number;
   passengers: Passenger[];
+}
+
+// Fix: Added missing BackgroundCheck interface for geminiService.ts
+export interface BackgroundCheck {
+  ninStatus: string;
+  loanDefaulter: boolean;
+  registryHits: number;
+  socialMediaScore: number;
+  simAgeDays: number;
+  riskAssessment: string;
+}
+
+// Fix: Added missing AuditReport interface for ForensicAudit.tsx
+export interface AuditReport {
+  id: string;
+  timestamp: string;
+  assetPlate: string;
+  action: string;
+  finding: string;
+  hash: string;
+  operator: string;
 }

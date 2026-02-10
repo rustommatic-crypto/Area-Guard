@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { MOCK_BUSES } from '../services';
+import { MOCK_BUSES } from '../constants';
 import { InterstateBus, Passenger } from '../types';
 
 const PassengerEscort: React.FC = () => {

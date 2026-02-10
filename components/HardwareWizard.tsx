@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { TrackerType } from '../types';
 
 const HardwareWizard: React.FC = () => {
   const [step, setStep] = useState(1);

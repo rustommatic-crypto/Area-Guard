@@ -1,9 +1,9 @@
 {
-  "name": "Area Asset Guard",
-  "description": "Commercial-grade Signal Intelligence (SIGINT) and asset recovery platform for logistics and hire-purchase organizations.",
   "requestFramePermissions": [
     "camera",
     "microphone",
     "geolocation"
-  ]
+  ],
+  "name": "Mustapha Sentinel",
+  "description": "Enterprise-grade asset intelligence and behavioral reconnaissance system."
 }
